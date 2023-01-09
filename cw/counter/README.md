@@ -1,17 +1,5 @@
 # CosmWasm
 
-## Project hierarchy
-
-```text
-./src
-|- contract.rs
-|- error.rs
-|- helper.rs
-|- msg.rs
-|- state.rs
-|- integration_tests.rs
-```
-
 ## CI Support
 
 We have template configurations for [GitHub Actions](.github/workflows/Basic.yml) in the generated project, so you can
