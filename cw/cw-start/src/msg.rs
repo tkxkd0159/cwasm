@@ -1,11 +1,11 @@
 use cosmwasm_schema::{cw_serde, QueryResponses};
 
 #[allow(unused_imports)]
-use crate::query::{EmptyResponse};
+use crate::query::{EnvResponse, PendingFundsResponse};
 
 #[cw_serde]
 pub struct InstantiateMsg {
-    pub name: String,
+    pub desc: String,
 }
 
 #[cw_serde]
@@ -16,6 +16,9 @@ pub enum ExecuteMsg {
 #[cw_serde]
 #[derive(QueryResponses)]
 pub enum QueryMsg {
-    #[returns(EmptyResponse)]
-    Empty {},
+    #[returns(EnvResponse)]
+    Env {},
+
+    #[returns(PendingFundsResponse)]
+    PendingFunds { denom: String },
 }
