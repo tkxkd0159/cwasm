@@ -8,11 +8,11 @@ pub mod state;
 
 #[cfg(test)]
 mod tests {
-    use cosmwasm_std::{Addr, Empty};
+    use cosmwasm_std::{Addr, Attribute, Empty};
     use cw_multi_test::{Contract, ContractWrapper, App, Executor};
     use crate::contract::{instantiate, execute, query};
     use crate::query::{EnvResponse};
-    use crate::msg::{QueryMsg, InstantiateMsg};
+    use crate::msg::{QueryMsg, InstantiateMsg, ExecuteMsg};
 
     fn mock_contract() -> Box<dyn Contract<Empty>> {
         let c = ContractWrapper::new(execute, instantiate, query);
@@ -32,5 +32,21 @@ mod tests {
         assert_eq!(resp.env_info.block.chain_id, "cosmos-testnet-14002");
         assert_eq!(resp.env_info.contract.address, contract_addr);
         assert_eq!(resp.env_info.transaction.unwrap().index, 0);
+    }
+
+    #[test]
+    fn exec_increment() {
+        let mut app = App::default();
+        let contract_id = app.store_code(mock_contract());
+        let contract_addr = app.instantiate_contract(contract_id, Addr::unchecked("sender"), &InstantiateMsg{desc: "exec_increment".to_string()}, &[], "Starting contract", None).unwrap();
+
+        let resp = app.execute_contract(Addr::unchecked("sender"), contract_addr.clone(), &ExecuteMsg::Increment {}, &[]).unwrap();
+        assert_eq!(resp.events[0].ty, "execute");
+        assert_eq!(resp.events[1].ty, "wasm");
+        assert_eq!(resp.events[1].attributes, vec![
+            Attribute{key: "_contract_addr".to_string(), value: "contract0".to_string()},
+            Attribute::new("owner", "sender"),
+            Attribute::new("count", "1"),
+        ]);
     }
 }
