@@ -1,5 +1,5 @@
 use cosmwasm_schema::write_api;
-use cw_start::msg::{InstantiateMsg, ExecuteMsg, QueryMsg};
+use cw_start::msg::{ExecuteMsg, InstantiateMsg, QueryMsg};
 
 fn main() {
     write_api! {

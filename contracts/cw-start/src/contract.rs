@@ -1,7 +1,9 @@
-use cosmwasm_std::{Binary, DepsMut, Deps, Env, MessageInfo, StdResult, Response, entry_point, to_binary, Event};
-use crate::{ContractError};
-use crate::msg::{InstantiateMsg, ExecuteMsg, QueryMsg};
-use crate::state::{CONTRACT_INFO, ContractInfo};
+use crate::msg::{ExecuteMsg, InstantiateMsg, QueryMsg};
+use crate::state::{ContractInfo, CONTRACT_INFO};
+use crate::ContractError;
+use cosmwasm_std::{
+    entry_point, to_binary, Binary, Deps, DepsMut, Env, Event, MessageInfo, Response, StdResult,
+};
 
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn instantiate(
@@ -10,14 +12,19 @@ pub fn instantiate(
     info: MessageInfo,
     msg: InstantiateMsg,
 ) -> Result<Response, ContractError> {
+    CONTRACT_INFO.save(
+        deps.storage,
+        &ContractInfo {
+            owner: info.sender.to_string(),
+            description: msg.desc.clone(),
+        },
+    )?;
 
-    CONTRACT_INFO.save(deps.storage, &ContractInfo{owner: info.sender.to_string(), description: msg.desc.clone() })?;
-
-    Ok(Response::default()
-        .add_event(Event::new("contract_info").add_attributes(vec![
-        ("owner", info.sender.to_string()),
-        ("description", msg.desc)])
-        )
+    Ok(
+        Response::default().add_event(Event::new("contract_info").add_attributes(vec![
+            ("owner", info.sender.to_string()),
+            ("description", msg.desc),
+        ])),
     )
 }
 
@@ -28,7 +35,7 @@ pub fn execute(
     info: MessageInfo,
     msg: ExecuteMsg,
 ) -> Result<Response, ContractError> {
-    use crate::exec::{exec_empty, exec_increment, exec_bank_send};
+    use crate::exec::{exec_bank_send, exec_empty, exec_increment};
 
     match msg {
         ExecuteMsg::Empty {} => exec_empty(),
@@ -38,12 +45,8 @@ pub fn execute(
 }
 
 #[cfg_attr(not(feature = "library"), entry_point)]
-pub fn query(
-    deps: Deps,
-    env: Env,
-    msg: QueryMsg,
-) -> StdResult<Binary> {
-    use crate::query::{q_env, q_count, q_pending_funds};
+pub fn query(deps: Deps, env: Env, msg: QueryMsg) -> StdResult<Binary> {
+    use crate::query::{q_count, q_env, q_pending_funds};
 
     match msg {
         QueryMsg::Env {} => to_binary(&q_env(deps, env)?),

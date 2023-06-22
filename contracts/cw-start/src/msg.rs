@@ -2,7 +2,7 @@ use cosmwasm_schema::{cw_serde, QueryResponses};
 use cosmwasm_std::Coin;
 
 #[allow(unused_imports)]
-use crate::query::{EnvResponse, PendingFundsResponse, CountResponse};
+use crate::query::{CountResponse, EnvResponse, PendingFundsResponse};
 
 #[cw_serde]
 pub struct InstantiateMsg {
@@ -13,7 +13,7 @@ pub struct InstantiateMsg {
 pub enum ExecuteMsg {
     Empty {},
     Increment {},
-    BankSend { receiver: String, amount: Vec<Coin> }
+    BankSend { receiver: String, amount: Vec<Coin> },
 }
 
 #[cw_serde]
@@ -26,5 +26,5 @@ pub enum QueryMsg {
     PendingFunds { denom: String },
 
     #[returns(CountResponse)]
-    Count { owner: String }
+    Count { owner: String },
 }
