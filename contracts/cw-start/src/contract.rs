@@ -28,11 +28,12 @@ pub fn execute(
     info: MessageInfo,
     msg: ExecuteMsg,
 ) -> Result<Response, ContractError> {
-    use crate::exec::{exec_empty, exec_increment};
+    use crate::exec::{exec_empty, exec_increment, exec_bank_send};
 
     match msg {
         ExecuteMsg::Empty {} => exec_empty(),
         ExecuteMsg::Increment {} => exec_increment(deps, info),
+        ExecuteMsg::BankSend { receiver, amount } => exec_bank_send(receiver, amount),
     }
 }
 

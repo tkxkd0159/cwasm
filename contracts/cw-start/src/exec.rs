@@ -1,4 +1,4 @@
-use cosmwasm_std::{DepsMut, MessageInfo, Response, StdResult};
+use cosmwasm_std::{Coin, DepsMut, MessageInfo, Response, StdResult, BankMsg, CosmosMsg};
 use crate::error::ContractError;
 use crate::state::{COUNTER, CounterState};
 
@@ -24,4 +24,14 @@ pub fn exec_increment(deps: DepsMut, info: MessageInfo) -> Result<Response, Cont
         .add_attribute("owner", info.sender.clone())
         .add_attribute("count", cnt.to_string())
     )
+}
+
+pub fn exec_bank_send(receiver: String, amount: Vec<Coin>) -> Result<Response, ContractError> {
+    let msg = CosmosMsg::Bank(BankMsg::Send {
+        to_address: receiver,
+        amount,
+    });
+
+    let res = Response::new().add_message(msg);
+    Ok(res)
 }
