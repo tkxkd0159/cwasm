@@ -13,3 +13,7 @@ target
 # IDEs
 *.iml
 .idea
+
+
+# Build
+artifacts

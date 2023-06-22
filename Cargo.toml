@@ -1,5 +1,5 @@
 [workspace]
-members = ["cw/counter", "cw/cw-start"]
+members = ["contracts/cw-start"]
 
 [profile.release]
 rpath = false

@@ -3,6 +3,7 @@ mod error;
 pub use crate::error::ContractError;
 pub mod msg;
 pub mod query;
+pub mod exec;
 pub mod state;
 
 #[cfg(test)]

@@ -1,5 +1,6 @@
 use cosmwasm_schema::cw_serde;
-use cw_storage_plus::Item;
+use cosmwasm_std::Addr;
+use cw_storage_plus::{Item, Map};
 
 #[cw_serde]
 pub struct ContractInfo {
@@ -7,4 +8,10 @@ pub struct ContractInfo {
     pub description: String,
 }
 
+#[cw_serde]
+pub struct CounterState {
+    pub count: u64,
+}
+
 pub const CONTRACT_INFO: Item<ContractInfo> = Item::new("contract_info");
+pub const COUNTER: Map<Addr, CounterState> = Map::new("counter");

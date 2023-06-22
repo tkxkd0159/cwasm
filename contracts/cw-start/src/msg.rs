@@ -1,7 +1,8 @@
 use cosmwasm_schema::{cw_serde, QueryResponses};
+use cosmwasm_std::Coin;
 
 #[allow(unused_imports)]
-use crate::query::{EnvResponse, PendingFundsResponse};
+use crate::query::{EnvResponse, PendingFundsResponse, CountResponse};
 
 #[cw_serde]
 pub struct InstantiateMsg {
@@ -11,6 +12,7 @@ pub struct InstantiateMsg {
 #[cw_serde]
 pub enum ExecuteMsg {
     Empty {},
+    Increment {},
 }
 
 #[cw_serde]
@@ -21,4 +23,7 @@ pub enum QueryMsg {
 
     #[returns(PendingFundsResponse)]
     PendingFunds { denom: String },
+
+    #[returns(CountResponse)]
+    Count { owner: String }
 }
