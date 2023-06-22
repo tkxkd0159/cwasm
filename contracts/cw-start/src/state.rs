@@ -15,3 +15,4 @@ pub struct CounterState {
 
 pub const CONTRACT_INFO: Item<ContractInfo> = Item::new("contract_info");
 pub const COUNTER: Map<Addr, CounterState> = Map::new("counter");
+pub const OWNER: Item<Addr> = Item::new("owner");

@@ -8,4 +8,7 @@ pub enum ContractError {
 
     #[error("Unauthorized")]
     Unauthorized {},
+
+    #[error("Insufficient balance to do this action")]
+    InsufficientFunds {},
 }

@@ -13,7 +13,15 @@ pub struct InstantiateMsg {
 pub enum ExecuteMsg {
     Empty {},
     Increment {},
-    BankSend { receiver: String, amount: Vec<Coin> },
+    BankSend {
+        receiver: String,
+        amount: Vec<Coin>,
+    },
+    Deposit {},
+    Withdraw {
+        recipient: String,
+        amount: Vec<Coin>,
+    },
 }
 
 #[cw_serde]

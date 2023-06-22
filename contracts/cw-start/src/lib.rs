@@ -12,7 +12,7 @@ mod tests {
     use crate::msg::{ExecuteMsg, InstantiateMsg, QueryMsg};
     use crate::query::EnvResponse;
     use cosmwasm_std::{coins, Addr, Attribute, Empty};
-    use cw_multi_test::{App, Contract, ContractWrapper, Executor, Module};
+    use cw_multi_test::{App, Contract, ContractWrapper, Executor};
 
     fn mock_contract() -> Box<dyn Contract<Empty>> {
         let c = ContractWrapper::new(execute, instantiate, query);
@@ -51,7 +51,7 @@ mod tests {
     #[test]
     fn exec_increment() {
         let sender = Addr::unchecked("sender");
-        let mut app = App::new(|router, api, storage| {
+        let mut app = App::new(|router, _api, storage| {
             router
                 .bank
                 .init_balance(storage, &sender, coins(10, "stake"))
@@ -91,6 +91,66 @@ mod tests {
                 Attribute::new("owner", sender),
                 Attribute::new("count", "1"),
             ]
+        );
+    }
+
+    #[test]
+    fn withdraw() {
+        let owner = Addr::unchecked("owner");
+        let sender = Addr::unchecked("sender");
+
+        let mut app = App::new(|router, _api, storage| {
+            router
+                .bank
+                .init_balance(storage, &sender, coins(100, "stake"))
+                .unwrap();
+        });
+
+        let contract_id = app.store_code(mock_contract());
+
+        let contract_addr = app
+            .instantiate_contract(
+                contract_id,
+                owner.clone(),
+                &InstantiateMsg {
+                    desc: "withdraw test".to_string(),
+                },
+                &[],
+                "Counting contract",
+                None,
+            )
+            .unwrap();
+
+        app.execute_contract(
+            sender.clone(),
+            contract_addr.clone(),
+            &ExecuteMsg::Deposit {},
+            &coins(50, "stake"),
+        )
+        .unwrap();
+
+        app.execute_contract(
+            owner.clone(),
+            contract_addr.clone(),
+            &ExecuteMsg::Withdraw {
+                recipient: owner.clone().into(),
+                amount: coins(17, "stake"),
+            },
+            &[],
+        )
+        .unwrap();
+
+        assert_eq!(
+            app.wrap().query_all_balances(owner).unwrap(),
+            coins(17, "stake")
+        );
+        assert_eq!(
+            app.wrap().query_all_balances(sender).unwrap(),
+            coins(50, "stake")
+        );
+        assert_eq!(
+            app.wrap().query_all_balances(contract_addr).unwrap(),
+            coins(33, "stake")
         );
     }
 }

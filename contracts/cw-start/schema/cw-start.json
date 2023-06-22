@@ -73,6 +73,47 @@
           }
         },
         "additionalProperties": false
+      },
+      {
+        "type": "object",
+        "required": [
+          "deposit"
+        ],
+        "properties": {
+          "deposit": {
+            "type": "object",
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      },
+      {
+        "type": "object",
+        "required": [
+          "withdraw"
+        ],
+        "properties": {
+          "withdraw": {
+            "type": "object",
+            "required": [
+              "amount",
+              "recipient"
+            ],
+            "properties": {
+              "amount": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Coin"
+                }
+              },
+              "recipient": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
       }
     ],
     "definitions": {
