@@ -1,8 +1,11 @@
 use crate::msg::{ExecuteMsg, InstantiateMsg, QueryMsg};
 use crate::state::{ContractInfo, CONTRACT_INFO, OWNER};
 use crate::ContractError;
+
+#[cfg(not(feature = "library"))]
+use cosmwasm_std::entry_point;
 use cosmwasm_std::{
-    entry_point, to_binary, Binary, Deps, DepsMut, Env, Event, MessageInfo, Response, StdResult,
+    to_binary, Binary, Deps, DepsMut, Env, Event, MessageInfo, Response, StdResult,
 };
 
 #[cfg_attr(not(feature = "library"), entry_point)]

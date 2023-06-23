@@ -218,6 +218,7 @@ dependencies = [
 name = "cw-start"
 version = "0.1.0"
 dependencies = [
+ "anyhow",
  "cosmwasm-schema",
  "cosmwasm-std",
  "cw-multi-test",
