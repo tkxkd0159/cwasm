@@ -1,6 +1,6 @@
 [package]
-name = "cw-start"
-version = "0.1.0"
+name = "cw-start-02"
+version = "0.2.0"
 edition = "2021"
 
 [lib]
@@ -17,7 +17,9 @@ cosmwasm-std = { workspace = true }
 cw-storage-plus = { workspace = true }
 thiserror = { workspace = true }
 anyhow = { workspace = true }
+serde = "1.0.164"
 cw-multi-test = { workspace = true, optional = true }
 
 [dev-dependencies]
 cw-multi-test = { workspace = true }
+cw-start-0_1 = { path = "../cw-start", package = "cw-start", features = ["tests"]}

@@ -1,13 +1,14 @@
 pub mod contract;
 mod error;
+mod migrate;
 pub use crate::error::ContractError;
 pub mod exec;
 pub mod msg;
 pub mod query;
 pub mod state;
 
-#[cfg(any(test, feature = "tests"))]
-pub mod multitest;
+#[cfg(test)]
+mod multitest;
 
 #[cfg(test)]
 mod tests {
@@ -62,7 +63,7 @@ mod tests {
                     value: "contract0".to_string()
                 },
                 Attribute::new("owner", sender),
-                Attribute::new("count", "1"),
+                Attribute::new("count", "2"),
             ]
         );
     }

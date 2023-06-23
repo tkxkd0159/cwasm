@@ -1,12 +1,13 @@
-use crate::contract::{execute, instantiate, query};
-use crate::msg::{ExecuteMsg, InstantiateMsg, QueryMsg};
-use crate::query::{CountResponse, EnvResponse, PendingFundsResponse};
-
-use crate::ContractError;
 use cosmwasm_std::StdResult;
 use cosmwasm_std::{Addr, Coin};
 use cw_multi_test::{App, AppResponse, ContractWrapper, Executor};
 
+use crate::contract::{execute, instantiate, migrate, query};
+use crate::msg::{ExecuteMsg, InstantiateMsg, MigrateMsg, QueryMsg};
+use crate::query::{CountResponse, EnvResponse, PendingFundsResponse};
+use crate::ContractError;
+
+#[derive(Debug)]
 pub struct MyContract(Addr);
 
 impl From<MyContract> for Addr {
@@ -22,7 +23,7 @@ impl MyContract {
 
     #[track_caller]
     pub fn store_code(app: &mut App) -> u64 {
-        let contract = ContractWrapper::new(execute, instantiate, query);
+        let contract = ContractWrapper::new(execute, instantiate, query).with_migrate(migrate);
         app.store_code(Box::new(contract))
     }
 
@@ -48,6 +49,13 @@ impl MyContract {
         )
         .map(MyContract)
         .map_err(|err| err.downcast().unwrap())
+    }
+
+    #[track_caller]
+    pub fn migrate(app: &mut App, contract: Addr, code_id: u64, sender: &Addr) -> StdResult<Self> {
+        app.migrate_contract(sender.clone(), contract.clone(), &MigrateMsg {}, code_id)
+            .map(|_| Self(contract))
+            .map_err(|err| err.downcast().unwrap())
     }
 }
 
@@ -131,12 +139,8 @@ impl MyContract {
     }
 
     #[track_caller]
-    pub fn query_count(&self, app: &App, owner: &str) -> StdResult<CountResponse> {
-        app.wrap().query_wasm_smart(
-            self.0.clone(),
-            &QueryMsg::Count {
-                owner: owner.to_string(),
-            },
-        )
+    pub fn query_count(&self, app: &App) -> StdResult<CountResponse> {
+        app.wrap()
+            .query_wasm_smart(self.0.clone(), &QueryMsg::Count {})
     }
 }
