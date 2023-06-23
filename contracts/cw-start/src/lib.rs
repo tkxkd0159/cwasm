@@ -9,6 +9,7 @@ pub mod state;
 #[cfg(test)]
 mod tests {
     use crate::contract::{execute, instantiate, query};
+    use crate::error::ContractError;
     use crate::msg::{ExecuteMsg, InstantiateMsg, QueryMsg};
     use crate::query::EnvResponse;
     use cosmwasm_std::{coins, Addr, Attribute, Empty};
@@ -120,6 +121,16 @@ mod tests {
                 None,
             )
             .unwrap();
+
+        let err = app
+            .execute_contract(
+                sender.clone(),
+                contract_addr.clone(),
+                &ExecuteMsg::Deposit {},
+                &[],
+            )
+            .unwrap_err();
+        assert_eq!(ContractError::InsufficientFunds {}, err.downcast().unwrap());
 
         app.execute_contract(
             sender.clone(),
