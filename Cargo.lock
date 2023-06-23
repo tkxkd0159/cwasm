@@ -223,6 +223,22 @@ dependencies = [
  "cosmwasm-std",
  "cw-multi-test",
  "cw-storage-plus",
+ "cw2",
+ "thiserror",
+]
+
+[[package]]
+name = "cw-start-02"
+version = "0.2.0"
+dependencies = [
+ "anyhow",
+ "cosmwasm-schema",
+ "cosmwasm-std",
+ "cw-multi-test",
+ "cw-start",
+ "cw-storage-plus",
+ "cw2",
+ "serde",
  "thiserror",
 ]
 
