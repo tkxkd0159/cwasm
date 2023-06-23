@@ -9,10 +9,10 @@ crate-type = ["cdylib", "rlib"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-cosmwasm-schema = "1.2.7"
-cosmwasm-std = "1.2.7"
-cw-storage-plus = "1.1.0"
-thiserror = "1.0.40"
+cosmwasm-schema = { workspace = true }
+cosmwasm-std = { workspace = true }
+cw-storage-plus = { workspace = true }
+thiserror = { workspace = true }
 
 [dev-dependencies]
-cw-multi-test = "0.16.5"
+cw-multi-test = { workspace = true }
