@@ -51,7 +51,7 @@ pub fn migrate(mut deps: DepsMut, _env: Env, _msg: MigrateMsg) -> Result<Respons
 
     let resp = match contract_info.version.as_str() {
         "0.1.0" => migrate_0_1_0(deps.branch())?,
-        "0.2.0" => return Ok(Response::default()),
+        CONTRACT_VERSION => return Ok(Response::default()),
         v => {
             return Err(ContractError::InvalidContractVersion {
                 version: v.to_string(),

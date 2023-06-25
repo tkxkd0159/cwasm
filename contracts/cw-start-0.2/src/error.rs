@@ -7,7 +7,7 @@ pub enum ContractError {
     Std(#[from] StdError),
 
     #[error("Unauthorized")]
-    Unauthorized {},
+    Unauthorized { owner: String },
 
     #[error("Insufficient balance to do this action")]
     InsufficientFunds {},
