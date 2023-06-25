@@ -37,5 +37,8 @@ pub fn migrate_0_1_0(deps: DepsMut) -> StdResult<Response> {
         },
     )?;
 
+    // destroy old data
+    OLD_COUNTER.clear(deps.storage);
+
     Ok(Response::default())
 }

@@ -1,5 +1,7 @@
 use cosmwasm_std::{coins, from_slice, Addr};
 use cw_multi_test::App;
+use cw_storage_plus::Map;
+use serde::{Deserialize, Serialize};
 
 use super::contract::MyContract;
 use crate::error::ContractError;
@@ -95,18 +97,57 @@ fn migration() {
         &initial_info.description,
     )
     .unwrap();
+    let old_contract_addr = old_contract.address();
+
     old_contract.increment(&mut app, &sender, &[]).unwrap();
     old_contract.increment(&mut app, &owner, &[]).unwrap();
 
+    #[derive(Serialize, Deserialize)]
+    pub struct CounterState {
+        pub count: u64,
+    }
+    const OLD_COUNTER: Map<Addr, CounterState> = Map::new("counter");
+    let v = app
+        .wrap()
+        .query_wasm_raw(
+            old_contract_addr.clone(),
+            OLD_COUNTER
+                .key(owner.clone())
+                .iter()
+                .map(|x| *x)
+                .collect::<Vec<u8>>(),
+        )
+        .unwrap()
+        .unwrap();
+
+    assert_eq!(serde_json::from_slice::<CounterState>(&v).unwrap().count, 1);
+
     let contract = MyContract::migrate(&mut app, old_contract.into(), new_code_id, &owner).unwrap();
     let resp = contract.query_env(&mut app).unwrap();
+    assert_eq!(old_contract_addr, contract.address());
     assert_eq!(resp.contract_info.description, "migrate");
     assert_eq!(resp.contract_info.owner, owner.to_string());
     assert_eq!(resp.contract_info.count, 2);
 
+    assert_eq!(
+        app.wrap()
+            .query_wasm_raw(
+                old_contract_addr.clone(),
+                OLD_COUNTER
+                    .key(owner.clone())
+                    .iter()
+                    .map(|x| *x)
+                    .collect::<Vec<u8>>(),
+            )
+            .unwrap()
+            .as_deref(),
+        None
+    );
+
     let v = app
         .wrap()
         .query_wasm_raw(contract.address(), "owner".as_bytes())
+        .unwrap()
         .unwrap();
-    assert_eq!(owner, from_slice::<Addr>(&v.unwrap()).unwrap());
+    assert_eq!(owner, from_slice::<Addr>(&v).unwrap());
 }

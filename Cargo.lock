@@ -239,6 +239,7 @@ dependencies = [
  "cw-storage-plus",
  "cw2",
  "serde",
+ "serde_json",
  "thiserror",
 ]
 
