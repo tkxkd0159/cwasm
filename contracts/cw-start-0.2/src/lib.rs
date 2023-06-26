@@ -7,7 +7,7 @@ pub mod msg;
 pub mod query;
 pub mod state;
 
-#[cfg(test)]
+#[cfg(any(test, feature = "tests"))]
 mod multitest;
 
 #[cfg(test)]
